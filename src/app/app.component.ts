@@ -65,6 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log(posts);  // <--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
       // it is undefined if you forgot to return postsArray in map.
       console.log(posts[0].id);
+      this.loadedPosts.push(...posts)
     });
   }
 }
