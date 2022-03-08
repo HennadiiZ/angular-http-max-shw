@@ -5,3 +5,14 @@
 .row {
   margin: 20px 0;
 }
+
+.block{
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.block-main{
+  margin-bottom: 10px;
+  border: 1px solid rgb(223, 184, 184);
+  width: 50%;
+}

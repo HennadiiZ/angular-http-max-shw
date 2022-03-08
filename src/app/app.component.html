@@ -34,8 +34,12 @@
     </div>
   </div>
 
-  <div *ngFor="let post of loadedPosts">{{ post | json}}</div>
-  <div >{{ loadedPosts.length }}</div>
+  <!-- <div *ngFor="let post of loadedPosts">{{ post | json}}</div> -->
+  <div > <span>Posts: </span> {{ loadedPosts.length }}</div>
+  <div *ngFor="let post of loadedPosts" class="block-main">
+    <div class="block">{{ post.title }}</div>
+    <div class="block">{{ post.content }}</div>
+  </div>
 
 
   <hr />
