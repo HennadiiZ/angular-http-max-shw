@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loadedPosts: Post[] = [];
   subscription: Subscription;
   isFetching = false;
+  error = null;
 
   constructor(private http: HttpClient, private postsService: PostsService) {}
 
@@ -23,6 +24,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription = this.postsService.fetchPosts().subscribe(posts=>{
       this.isFetching = false;
       this.loadedPosts = posts;
+    }, error => {
+      this.error = error.message; // by default an error has a message
+      console.log(this.error);
+      console.log(this.error.message);
     });
   }
 
@@ -35,7 +40,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription = this.postsService.fetchPosts().subscribe(posts=>{
       this.isFetching = false;
       this.loadedPosts = posts;
+    }, error => {
+        this.error = error.message; // by default an error has a message
     });
+
+    this.error = null;
   }
 
   onClearPosts() {
