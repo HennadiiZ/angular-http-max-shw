@@ -27,9 +27,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onCreatePost(postData: Post) {
     // Send Http request
-    console.log(postData);
+    console.log(postData); // {title: 'qwer', content: '1'}
 
-    this.subscription =  this.http.post(`${this.link}posts.json`, postData)
+    this.subscription =  this.http.post<{ name: string}>(`${this.link}posts.json`, postData)
     .subscribe(responseData => {
       console.log(responseData); //{name: "-Mx_8nE_2GjdHUjuuVb5"}
     });
@@ -49,25 +49,20 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private fetchPosts() {
-    this.subscription =  this.http.get(`${this.link}posts.json`)
-    // .pipe(map((responseData: Post[]) => {
-    .pipe(map((responseData: { [key: string]: Post }) => {
-      console.log(responseData) // 1 <--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
+    this.subscription =  this.http.get<{ [key: string]: Post }>(`${this.link}posts.json`)
+    .pipe(map((responseData) => {
        const postsArray: Post[] = [];
        for(const key in responseData) {
 
         if(responseData.hasOwnProperty(key)){
-         // console.log(responseData[key]) // every post separately
          postsArray.push({...responseData[key], id: key});
         }
         
        }
-       console.log(postsArray) // all posts are here after all, as objects in one array
        return postsArray;
     }))
     .subscribe((posts: Post[])=>{
-      //...
-      console.log(posts);  //2<--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
+      console.log(posts);  // <--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
       // it is undefined if you forgot to return postsArray in map.
       console.log(posts[0].id);
     });
