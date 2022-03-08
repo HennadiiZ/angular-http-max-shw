@@ -14,9 +14,7 @@ export class PostsService{
     constructor( private http: HttpClient ){}
 
   createAndStorePost(title: string, content: string){
-
     const postData: Post = {title, content};
-
     this.subscription =  this.http.post<{ name: string}>(`${this.link}posts.json`, postData)
     .subscribe(responseData => {
       console.log(responseData); 
@@ -35,6 +33,10 @@ export class PostsService{
        }
        return postsArray;
     }));
+  }
+
+  clearPosts(){
+    return  this.http.delete<{ [key: string]: Post }>(`${this.link}posts.json`)
   }
     
 }

@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isFetching = true;
-    this.postsService.fetchPosts().subscribe(posts=>{
+    this.subscription = this.postsService.fetchPosts().subscribe(posts=>{
       this.isFetching = false;
       this.loadedPosts = posts;
     });
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onFetchPosts() {
     this.isFetching = true;
-    this.postsService.fetchPosts().subscribe(posts=>{
+    this.subscription = this.postsService.fetchPosts().subscribe(posts=>{
       this.isFetching = false;
       this.loadedPosts = posts;
     });
@@ -40,6 +40,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onClearPosts() {
     // Send Http request
+    this.subscription = this.postsService.clearPosts().subscribe(posts=>{
+      this.loadedPosts = [];
+    });
   }
 
   ngOnDestroy(){
