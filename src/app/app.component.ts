@@ -2,6 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+
+export interface Post {
+  content: string;
+  title: string; 
+  id?: string;
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.fetchPosts();
   }
 
-  onCreatePost(postData: { title: string; content: string }) {
+  onCreatePost(postData: Post) {
     // Send Http request
     console.log(postData);
 
@@ -43,9 +50,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private fetchPosts() {
     this.subscription =  this.http.get(`${this.link}posts.json`)
-    .pipe(map(responseData => {
+    // .pipe(map((responseData: Post[]) => {
+    .pipe(map((responseData: { [key: string]: Post }) => {
       console.log(responseData) // 1 <--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
-       const postsArray = [];
+       const postsArray: Post[] = [];
        for(const key in responseData) {
 
         if(responseData.hasOwnProperty(key)){
@@ -57,10 +65,11 @@ export class AppComponent implements OnInit, OnDestroy {
        console.log(postsArray) // all posts are here after all, as objects in one array
        return postsArray;
     }))
-    .subscribe(posts=>{
+    .subscribe((posts: Post[])=>{
       //...
       console.log(posts);  //2<--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
-      // now it is undefined , after postsArray.push({...responseData[key]});
+      // it is undefined if you forgot to return postsArray in map.
+      console.log(posts[0].id);
     });
   }
 }
