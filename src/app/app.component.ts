@@ -19,8 +19,11 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient, private postsService: PostsService) {}
 
   ngOnInit() {
-    //this.fetchPosts();
-    this.postsService.fetchPosts();
+    this.isFetching = true;
+    this.postsService.fetchPosts().subscribe(posts=>{
+      this.isFetching = false;
+      this.loadedPosts = posts;
+    });
   }
 
   onCreatePost(postData: Post) {
@@ -28,10 +31,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onFetchPosts() {
-    // Send Http request
-    //this.fetchPosts();
-    this.postsService.fetchPosts();
-    //this.loadedPosts = this.postsService.fetchPosts();
+    this.isFetching = true;
+    this.postsService.fetchPosts().subscribe(posts=>{
+      this.isFetching = false;
+      this.loadedPosts = posts;
+    });
   }
 
   onClearPosts() {
@@ -42,23 +46,4 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  // private fetchPosts() {
-  //   this.isFetching = true;
-  //   this.subscription =  this.http.get<{ [key: string]: Post }>(`${this.link}posts.json`)
-  //   .pipe(map((responseData) => {
-  //      const postsArray: Post[] = [];
-  //      for(const key in responseData) {
-
-  //       if(responseData.hasOwnProperty(key)){
-  //        postsArray.push({...responseData[key], id: key});
-  //       }
-        
-  //      }
-  //      return postsArray;
-  //   }))
-  //   .subscribe((posts: Post[])=>{
-  //     this.isFetching = false;
-  //     this.loadedPosts = posts;
-  //   });
-  // }
 }

@@ -25,22 +25,16 @@ export class PostsService{
 
 
   fetchPosts() {
-
-    this.subscription =  this.http.get<{ [key: string]: Post }>(`${this.link}posts.json`)
+    return this.http.get<{ [key: string]: Post }>(`${this.link}posts.json`)
     .pipe(map((responseData) => {
        const postsArray: Post[] = [];
        for(const key in responseData) {
-
-        if(responseData.hasOwnProperty(key)){
-         postsArray.push({...responseData[key], id: key});
-        }
-        
+            if(responseData.hasOwnProperty(key)){
+             postsArray.push({...responseData[key], id: key});
+            }
        }
        return postsArray;
-    }))
-    .subscribe((posts: Post[])=>{
-
-    });
+    }));
   }
     
 }
