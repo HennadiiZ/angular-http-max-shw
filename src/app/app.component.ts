@@ -18,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   link = 'https://ng-guide-d3833-default-rtdb.firebaseio.com/'
   loadedPosts: Post[] = [];
   subscription: Subscription;
+  isFetching = false;
 
   constructor(private http: HttpClient) {}
 
@@ -49,6 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private fetchPosts() {
+    this.isFetching = true;
     this.subscription =  this.http.get<{ [key: string]: Post }>(`${this.link}posts.json`)
     .pipe(map((responseData) => {
        const postsArray: Post[] = [];
@@ -62,10 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
        return postsArray;
     }))
     .subscribe((posts: Post[])=>{
-      console.log(posts);  // <--- all posts are here : {-Mx_6z74J0tAKhr-frO5: {…}, -Mx_7NFZQC8faH844WXZ: {…}, -Mx_8Ls-DUr85ZHa-mz9: {…}, -Mx_8nE_2GjdHUjuuVb5: {…}, -Mx_9EKyHAKFWZwkR9xo: {…}}
-      // it is undefined if you forgot to return postsArray in map.
-      console.log(posts[0].id);
-      // this.loadedPosts.push(...posts)
+      this.isFetching = false;
       this.loadedPosts = posts;
     });
   }
