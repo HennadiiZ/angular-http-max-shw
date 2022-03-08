@@ -16,10 +16,16 @@ export class AppComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   isFetching = false;
   error = null;
+  private errorSub: Subscription;
 
   constructor(private http: HttpClient, private postsService: PostsService) {}
 
   ngOnInit() {
+
+    this.errorSub = this.postsService.error.subscribe(errorMessage => {
+      this.error = errorMessage;
+    });
+
     this.isFetching = true;
     this.subscription = this.postsService.fetchPosts().subscribe(posts=>{
       this.isFetching = false;
@@ -56,6 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
+    this.errorSub.unsubscribe();
   }
 
 }

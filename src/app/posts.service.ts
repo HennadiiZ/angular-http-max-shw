@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { Post } from "./post.interface";
 import { map } from 'rxjs/operators';
 
@@ -11,6 +11,7 @@ export class PostsService{
 
     link = 'https://ng-guide-d3833-default-rtdb.firebaseio.com/'
     subscription: Subscription;
+    error = new Subject<string>();
     constructor( private http: HttpClient ){}
 
   createAndStorePost(title: string, content: string){
@@ -18,6 +19,8 @@ export class PostsService{
     this.subscription =  this.http.post<{ name: string}>(`${this.link}posts.json`, postData)
     .subscribe(responseData => {
       console.log(responseData); 
+    }, error => {
+        this.error.next(error.message)
     });
   }
 
