@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Subject, Subscription, throwError } from "rxjs";
 import { Post } from "./post.interface";
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 
 @Injectable({ providedIn: 'root' })
@@ -16,9 +16,18 @@ export class PostsService{
 
   createAndStorePost(title: string, content: string){
     const postData: Post = {title, content};
-    this.subscription =  this.http.post<{ name: string}>(`${this.link}posts.json`, postData)
+    this.subscription =  this.http
+    .post<{ name: string}>(
+        `${this.link}posts.json`, 
+        postData,
+        { 
+            // observe: 'body' // by default
+            observe: 'response'
+        }
+    )
     .subscribe(responseData => {
       console.log(responseData); 
+      console.log(responseData.body); 
     }, error => {
         this.error.next(error.message)
     });
@@ -27,19 +36,10 @@ export class PostsService{
 
   fetchPosts() {
 
-    // the same 1: 
-    // let searchParams = new HttpParams();
-    // searchParams = searchParams.append('print', 'pretty');
-    // searchParams = searchParams.append('custom', 'key');
-
     return this.http.get<{ [key: string]: Post }>(`${this.link}posts.json`,
-    // the same 2:
-    //return this.http.get<{ [key: string]: Post }>(`${this.link}posts.json?print=pretty`,
     {
        headers: new HttpHeaders({ "custom-header": "Content-Type"}),
-       // the same 3:
        params: new HttpParams().set('print', 'pretty')
-       // params: searchParams // from 1st example
     }
     )
     .pipe(map((responseData) => {
@@ -59,7 +59,26 @@ export class PostsService{
   }
 
   clearPosts(){
-    return  this.http.delete<{ [key: string]: Post }>(`${this.link}posts.json`)
+    return  this.http.delete<{ [key: string]: Post }>(`${this.link}posts.json`,
+    { 
+        // observe: 'body' // by default
+        // observe: 'response'
+        observe: 'events'
+    }
+    )
+    .pipe(
+        tap(event=>{
+        console.log(event); // HttpResponse {headers: HttpHeaders, status: 200, statusText: 'OK', url: 'https://ng-guide-d3833-default-rtdb.firebaseio.com/posts.json', ok: true, …}
+        
+        if(event.type === HttpEventType.Sent){
+            console.log(event);
+        }
+
+        if(event.type === HttpEventType.Response){
+            console.log(event.body);
+        }
+    })
+    ) 
   }
     
 }
