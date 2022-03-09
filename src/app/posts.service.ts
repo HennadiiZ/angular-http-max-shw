@@ -61,12 +61,8 @@ export class PostsService{
   clearPosts(){
     return  this.http.delete<{ [key: string]: Post }>(`${this.link}posts.json`,
     { 
-        // observe: 'body' // by default
-        // observe: 'response'
         observe: 'events',
         responseType: 'json', // by default
-        //responseType: 'blob',
-        // responseType: 'text',
     }
     )
     .pipe(
