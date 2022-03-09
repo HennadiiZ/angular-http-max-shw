@@ -63,7 +63,10 @@ export class PostsService{
     { 
         // observe: 'body' // by default
         // observe: 'response'
-        observe: 'events'
+        observe: 'events',
+        responseType: 'json', // by default
+        //responseType: 'blob',
+        // responseType: 'text',
     }
     )
     .pipe(
